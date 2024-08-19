@@ -32,20 +32,14 @@ class DataBaseConnector:
         table_names = inspector.get_table_names()
         return table_names
 
+    def upload_to_db(self, db_cleaner, engine, table_name):
+        cleaned_data = db_cleaner.clean_user_data()
+        cleaned_data.to_sql(table_name, engine, if_exists = 'replace')
+
+
+
 db_connector = DataBaseConnector()
 
-# Read the database credentials from the YAML file
-creds = db_connector.read_db_creds()
-
-# Initialize the database engine using the credentials
-engine = db_connector.init_db_engine(creds)
-
-# List all tables in the database
-table_names = db_connector.list_db_tables(engine)
-
-# Print the list of tables
-print("Tables in the database:", table_names)
-    
 
 
 

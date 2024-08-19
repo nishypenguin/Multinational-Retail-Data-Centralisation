@@ -1,5 +1,7 @@
 import psycopg2
 import yaml 
+from sqlalchemy import create_engine
+import pandas as pd
 
 class DataBaseConnector:
 
@@ -11,24 +13,22 @@ class DataBaseConnector:
            creds = yaml.safe_load(file)
            return creds 
 
-    def init_db_engine(self,creds):
-        HOST = creds['RDS_HPST']
+    def init_db_engine(self, creds):
+        DATABASE_TYPE = 'postgresql'
+        DBAPI = 'psycopg2'
+        HOST = creds['RDS_HOST']
         USER = creds['RDS_USER']
         PASSWORD = creds['RDS_PASSWORD']
         DATABASE = creds['RDS_DATABASE']
         PORT = creds['RDS_PORT']
 
-        with psycopg2.connect(host=HOST, user=USER, password=PASSWORD, dbname=DATABASE, port=PORT) as conn:
-            with conn.cursor() as cur:
-                cur.execute('''CREATE TABLE actor_2 AS (
-                            SELECT * FROM actor
-                            LIMIT 10);
+        engine = create_engine(f"{DATABASE_TYPE}+{DBAPI}://{USER}:{PASSWORD}@{HOST}:{PORT}/{DATABASE}")
+        engine.connect()
+        return engine
 
-                            SELECT * FROM actor_2''')
-                print(type(cur))
-                records = cur.fetchall()
+    
 
-
+db_connector = DataBaseConnector(); engine = db_connector.init_db_engine(db_connector.read_db_creds()); pd.read_sql('SELECT 1', engine)
 
 
 

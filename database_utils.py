@@ -1,6 +1,7 @@
 import psycopg2
 import yaml 
 from sqlalchemy import create_engine
+from sqlalchemy import inspect
 import pandas as pd
 
 class DataBaseConnector:
@@ -25,10 +26,27 @@ class DataBaseConnector:
         engine = create_engine(f"{DATABASE_TYPE}+{DBAPI}://{USER}:{PASSWORD}@{HOST}:{PORT}/{DATABASE}")
         engine.connect()
         return engine
+    
+    def list_db_tables(self, engine):
+        inspector = inspect(engine)
+        table_names = inspector.get_table_names()
+        return table_names
 
+db_connector = DataBaseConnector()
+
+# Read the database credentials from the YAML file
+creds = db_connector.read_db_creds()
+
+# Initialize the database engine using the credentials
+engine = db_connector.init_db_engine(creds)
+
+# List all tables in the database
+table_names = db_connector.list_db_tables(engine)
+
+# Print the list of tables
+print("Tables in the database:", table_names)
     
 
-db_connector = DataBaseConnector(); engine = db_connector.init_db_engine(db_connector.read_db_creds()); pd.read_sql('SELECT 1', engine)
 
 
 

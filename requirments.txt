@@ -1,0 +1,20 @@
+# Database connection and handling
+SQLAlchemy
+psycopg2-binary
+PyYAML
+
+# Data manipulation and cleaning
+panda
+numpy
+
+# AWS and S3 access
+boto3
+
+# API requests and data extraction
+requests
+
+# PDF data extraction
+tabula-py
+
+# Date parsing and manipulation
+python-dateutil
